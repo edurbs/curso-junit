@@ -1,6 +1,7 @@
 package com.algaworks.junit.util;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,13 +28,19 @@ class GreetingUtilTest {
 
 
     @Test
-    void throwsException(){
-        IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> GreetingUtil.greet(25));
-        assertEquals("Invalid hour", illegalArgumentException.getMessage());
+    void givenWrongHour_whenGreet_thenThrowIllegalArgumentException(){
+        int wrongHour = 25;
+        Executable greet = () -> GreetingUtil.greet(wrongHour);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, greet);
+
+        assertEquals("Invalid hour", exception.getMessage());
     }
 
     @Test
-    void notThrowsException(){
-        assertDoesNotThrow(() -> GreetingUtil.greet(9));
+    void givenValidHour_whenGreet_thenDoesNotThrowException(){
+        int validHour = 9;
+        Executable greet = () -> GreetingUtil.greet(validHour);
+        assertDoesNotThrow(greet);
     }
 }
