@@ -1,4 +1,4 @@
-package com.algaworks.junit.utilidade;
+package com.algaworks.junit.util;
 
 import java.math.BigDecimal;
 

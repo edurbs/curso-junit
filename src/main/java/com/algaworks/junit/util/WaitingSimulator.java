@@ -1,14 +1,14 @@
-package com.algaworks.junit.utilidade;
+package com.algaworks.junit.util;
 
 import java.time.Duration;
 
-public class SimuladorEspera {
+public class WaitingSimulator {
 
-    private SimuladorEspera() {
+    private WaitingSimulator() {
 
     }
 
-    public static void esperar(Duration duration) {
+    public static void wait(Duration duration) {
         try {
             Thread.sleep(duration.toMillis());
         } catch (Exception ignored) {

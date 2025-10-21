@@ -1,4 +1,4 @@
-package com.algaworks.junit.utilidade;
+package com.algaworks.junit.util;
 
 public enum Multiplicador {
     DOBRO(2.0),
