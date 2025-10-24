@@ -1,10 +1,13 @@
 package com.algaworks.junit.util;
 
+import com.algaworks.junit.custom.HumanPhraseDisplayNameGenerator;
+import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayNameGeneration(HumanPhraseDisplayNameGenerator.class)
 class GreetingUtilTest {
 
     @Test

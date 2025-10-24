@@ -2,35 +2,35 @@ package com.algaworks.junit.ecommerce;
 
 import java.util.Objects;
 
-public class Cliente {
+public class Customer {
     private Long id;
-    private String nome;
+    private String name;
 
-    public Cliente(Long id, String nome) {
+    public Customer(Long id, String name) {
         Objects.requireNonNull(id);
-        Objects.requireNonNull(nome);
+        Objects.requireNonNull(name);
         this.id = id;
-        this.nome = nome;
+        this.name = name;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Cliente cliente = (Cliente) o;
-        return Objects.equals(id, cliente.id) && Objects.equals(nome, cliente.nome);
+        Customer customer = (Customer) o;
+        return Objects.equals(id, customer.id) && Objects.equals(name, customer.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nome);
+        return Objects.hash(id, name);
     }
 }

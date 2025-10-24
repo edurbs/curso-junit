@@ -1,14 +1,14 @@
-package com.algaworks.junit.blog.modelo;
+package com.algaworks.junit.blog.model;
 
 import java.time.OffsetDateTime;
 
-public class Notificacao {
+public class Notification {
     private OffsetDateTime offsetDateTime;
-    private String conteudo;
+    private String content;
 
-    public Notificacao(OffsetDateTime offsetDateTime, String conteudo) {
+    public Notification(OffsetDateTime offsetDateTime, String content) {
         this.offsetDateTime = offsetDateTime;
-        this.conteudo = conteudo;
+        this.content = content;
     }
 
     public OffsetDateTime getOffsetDateTime() {
@@ -19,11 +19,11 @@ public class Notificacao {
         this.offsetDateTime = offsetDateTime;
     }
 
-    public String getConteudo() {
-        return conteudo;
+    public String getContent() {
+        return content;
     }
 
-    public void setConteudo(String conteudo) {
-        this.conteudo = conteudo;
+    public void setContent(String content) {
+        this.content = content;
     }
 }

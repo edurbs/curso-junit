@@ -1,12 +1,12 @@
-package com.algaworks.junit.blog.negocio;
+package com.algaworks.junit.blog.business;
 
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.SimpleEmail;
 
-public class GerenciadorEnvioEmail {
+public class EmailSendingManager {
 
-    void enviarEmail(Mensagem mensagem) {
+    void sendEmail(Message message) {
         try {
             Email email = new SimpleEmail();
             email.setHostName("smtp.gmail.com");
@@ -14,9 +14,9 @@ public class GerenciadorEnvioEmail {
             email.setAuthenticator(new DefaultAuthenticator("algatestes.algaworks", ""));
             email.setSSLOnConnect(true);
             email.setFrom("algatestes@gmail.com");
-            email.setSubject(mensagem.getAssunto());
-            email.setMsg(mensagem.getConteudo());
-            email.addTo(mensagem.getAssunto());
+            email.setSubject(message.getSubject());
+            email.setMsg(message.getContent());
+            email.addTo(message.getSubject());
             email.send();
         } catch (Exception e) {
             throw new RuntimeException(e);
