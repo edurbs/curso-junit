@@ -34,23 +34,26 @@ class EarningsCalculatorTest {
     }
 
     @Test
-    void giveEditorPremium_whenCalculate_shouldBeCorrect(){
+    void givenEditorPremiumWith7Words_whenCalculate_thenPostGetTotalEarnings_equals45(){
         Earnings earnings = sut.calculate(post);
-
         assertEquals(new BigDecimal("45"), earnings.getTotalEarnings());
+    }
+    @Test
+    void givenEditorPremiumWith7Words_whenCalculate_thenPostGetWordCount_equals7(){
+        Earnings earnings = sut.calculate(post);
         assertEquals(7, earnings.getWordCount());
+    }
+    @Test
+    void givenEditorPremiumWith7Words_whenCalculate_thenPostGetValuePaidPerWord_equalsEarningsGetValuePaidPerWord(){
+        Earnings earnings = sut.calculate(post);
         assertEquals(editor.getValuePaidPerWord(), earnings.getValuePaidPerWord());
     }
 
     @Test
-    void giveEditorNotPremium_whenCalculate_shouldBeCorrect(){
+    void givenEditorNotPremiumWith7Words_whenCalculate_thenPostGetTotalEarnings_equals35(){
         editor.setPremium(false);
-
         Earnings earnings = sut.calculate(post);
-
         assertEquals(new BigDecimal("35"), earnings.getTotalEarnings());
-        assertEquals(7, earnings.getWordCount());
-        assertEquals(editor.getValuePaidPerWord(), earnings.getValuePaidPerWord());
     }
 
 }
