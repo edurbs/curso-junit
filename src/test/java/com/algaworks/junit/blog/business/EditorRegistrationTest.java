@@ -29,9 +29,11 @@ class EditorRegistrationTest {
 
     Editor editor;
 
+    AutoCloseable closeable;
+
     @BeforeEach
     void init() {
-        MockitoAnnotations.openMocks(this);
+        closeable = MockitoAnnotations.openMocks(this);
         editor = new Editor(null, "Nome", "asd@asd.com", BigDecimal.TEN, true);
         when(editorStorage.save(editor))
                 .thenReturn(new Editor(76L, "Nome", "asd@asd.com", BigDecimal.TEN, true));
