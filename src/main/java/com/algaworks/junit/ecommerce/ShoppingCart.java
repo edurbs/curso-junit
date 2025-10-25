@@ -1,9 +1,9 @@
 package com.algaworks.junit.ecommerce;
 
+import com.algaworks.junit.blog.exception.BusinessRuleException;
+
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class ShoppingCart {
 
@@ -18,12 +18,11 @@ public class ShoppingCart {
 		Objects.requireNonNull(customer);
 		Objects.requireNonNull(items);
 		this.customer = customer;
-		this.items = new ArrayList<>(items); //Creates list in case an immutable one is passed
+		this.items = new ArrayList<>(items);
 	}
 
 	public List<ShoppingCartItem> getItems() {
-		//TODO must return a new list so the old one is not altered
-		return null;
+		return items;
 	}
 
 	public Customer getCustomer() {
@@ -31,42 +30,73 @@ public class ShoppingCart {
 	}
 
 	public void addProduct(Product product, int quantity) {
-		//TODO parameters cannot be null, should return an exception
-		//TODO quantity cannot be less than 1
-		//TODO should increment quantity if product already exists
+        Objects.requireNonNull(product);
+        if(quantity<1){
+            throw new BusinessRuleException("Quantity can't be less than 1.");
+        }
+        items.stream()
+                .filter(item -> item.getProduct().equals(product))
+                .findFirst()
+                .ifPresentOrElse( item -> item.addQuantity(quantity),
+                        () -> {
+                            ShoppingCartItem shoppingCartItem = new ShoppingCartItem(product, quantity);
+                            items.add(shoppingCartItem);
+                        }
+                );
 	}
 
 	public void removeProduct(Product product) {
-		//TODO parameter cannot be null, should return an exception
-		//TODO if product does not exist, should return an exception
-		//TODO should remove product regardless of quantity
+        Objects.requireNonNull(product);
+        boolean removed = items.removeIf(item -> item.getProduct().equals(product));
+        if(!removed){
+            throw new BusinessRuleException("Product does not exists.");
+        }
 	}
 
-	public void increaseProductQuantity(Product product) {
-		//TODO parameter cannot be null, should return an exception
-		//TODO if product does not exist, should return an exception
-		//TODO should increase product quantity by one
+	public void increaseOneProductQuantity(Product product) {
+        Objects.requireNonNull(product);
+        items.stream()
+                .filter(item -> item.getProduct().equals(product))
+                .findFirst()
+                .ifPresentOrElse(
+                        item -> item.addQuantity(1),
+                        () -> {throw new BusinessRuleException("Product does not exists in shopping cart.");}
+                );
+
 	}
 
-    public void decreaseProductQuantity(Product product) {
-		//TODO parameter cannot be null, should return an exception
-		//TODO if product does not exist, should return an exception
-		//TODO should decrease product quantity by one, if there is only one product, should remove from list
+    public void decreaseOneProductQuantity(Product product) {
+        Objects.requireNonNull(product);
+        items.stream()
+                .filter(item -> item.getProduct().equals(product))
+                .findFirst()
+                .ifPresentOrElse(
+                        item -> {
+                            int quantity = item.getQuantity();
+                            if(quantity>1){
+                                item.subtractQuantity(1);
+                            }else{
+                                removeProduct(product);
+                            }
+                        },
+                        () -> {throw new BusinessRuleException("The shopping cart does not have the product");}
+                );
 	}
 
     public BigDecimal getTotalValue() {
-		//TODO implement sum of total value of all items
-		return null;
+		return items.stream()
+                .map(ShoppingCartItem::getTotalValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 	public int getTotalQuantityOfProducts() {
-		//TODO returns total quantity of items in cart
-		//TODO Example in a cart with 2 items, with quantity 2 and 3 for each item respectively, should return 5
-		return 0;
+		return items.stream()
+                .map(ShoppingCartItem::getQuantity)
+                .reduce(0, Integer::sum);
 	}
 
 	public void empty() {
-		//TODO should remove all items
+        items.clear();
 	}
 
 	@Override
