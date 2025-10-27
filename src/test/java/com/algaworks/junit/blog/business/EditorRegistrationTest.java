@@ -1,5 +1,6 @@
 package com.algaworks.junit.blog.business;
 
+import com.algaworks.junit.blog.exception.BusinessRuleException;
 import com.algaworks.junit.blog.model.Editor;
 import com.algaworks.junit.blog.storage.EditorStorage;
 import com.algaworks.junit.custom.HumanPhraseDisplayNameGenerator;
@@ -7,13 +8,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -81,6 +80,24 @@ class EditorRegistrationTest {
     void givenValidEditor_whenCreate_thenVerifyEmail(){
         sut.create(editor);
         verify(editor, atLeastOnce()).getEmail();
+    }
+
+    @Test
+    void givenEditorWithEmail_whenCreate_thenThrowException(){
+        when(editorStorage.findByEmail("asd@asd.com"))
+                .thenReturn(Optional.empty()) // first call
+                .thenReturn(Optional.of(editor)); // second call
+        Editor editorWithEmail = new Editor(null, "Nome", "asd@asd.com", BigDecimal.TEN, true);
+        sut.create(editor); // first call
+        assertThrows(BusinessRuleException.class, () -> sut.create(editorWithEmail)); // second call
+    }
+
+    @Test
+    void givenValidEditor_whenCreate_thenFirstSaveAndSecondSendEmail(){
+        sut.create(editor);
+        InOrder inOrder = inOrder(editorStorage, emailSendingManager);
+        inOrder.verify(editorStorage).save(editor);
+        inOrder.verify(emailSendingManager).sendEmail(any(Message.class));
     }
 
 }
