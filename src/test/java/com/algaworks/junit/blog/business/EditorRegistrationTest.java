@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -31,13 +32,12 @@ class EditorRegistrationTest {
     @InjectMocks
     EditorRegistration sut;
 
-    Editor editor;
+    @Spy
+    Editor editor = new Editor(null, "Nome", "asd@asd.com", BigDecimal.TEN, true);
 
     @BeforeEach
     void init() {
-        editor = new Editor(null, "Nome", "asd@asd.com", BigDecimal.TEN, true);
         when(editorStorage.save(any(Editor.class)))
-                //.thenReturn(new Editor(76L, "Nome", "asd@asd.com", BigDecimal.TEN, true));
                 .thenAnswer( invocation -> {
                     Editor editorReturned = invocation.getArgument(0, Editor.class);
                     editorReturned.setId(76L);
@@ -75,6 +75,12 @@ class EditorRegistrationTest {
         verify(emailSendingManager).sendEmail(messageArgumentCaptor.capture());
         Message message = messageArgumentCaptor.getValue();
         assertEquals(editorSaved.getEmail(), message.getRecipient());
+    }
+
+    @Test
+    void givenValidEditor_whenCreate_thenVerifyEmail(){
+        sut.create(editor);
+        verify(editor, atLeastOnce()).getEmail();
     }
 
 }
