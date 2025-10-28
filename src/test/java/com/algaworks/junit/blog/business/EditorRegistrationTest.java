@@ -24,9 +24,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class EditorRegistrationTest {
 
-    @Spy
-    Editor editor = new Editor(null, "Nome", "asd@asd.com", BigDecimal.TEN, true);
-
     @Mock
     EditorStorage editorStorage;
 
@@ -39,6 +36,9 @@ class EditorRegistrationTest {
 
     @Nested
     class GivenValidEditor {
+
+        @Spy
+        Editor editor = new Editor(null, "Nome", "asd@asd.com", BigDecimal.TEN, true);
 
         @BeforeEach
         void init() {
@@ -108,13 +108,17 @@ class EditorRegistrationTest {
 
     }
 
+    @Nested
+    class GivenNullEditor {
 
-    @Test
-    void givenNulLEditor_whenCreate_thenThrowException(){
-        Executable create = () -> sut.create(null);
-        assertThrows(RuntimeException.class, create);
-        verify(editorStorage, never()).save(any());
-        verify(emailSendingManager, never()).sendEmail(any());
+        @Test
+        void givenNulLEditor_whenCreate_thenThrowException(){
+            Executable create = () -> sut.create(null);
+            assertThrows(RuntimeException.class, create);
+            verify(editorStorage, never()).save(any());
+            verify(emailSendingManager, never()).sendEmail(any());
+        }
     }
+
 
 }
