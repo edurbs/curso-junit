@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class BigDecimalUtils {
 
-    public static boolean iguais(BigDecimal x, BigDecimal y) {
+    public static boolean equals(BigDecimal x, BigDecimal y) {
         return x.compareTo(y) == 0;
     }
 
