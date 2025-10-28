@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayNameGeneration(HumanPhraseDisplayNameGenerator.class)
 class EarningsCalculatorTest {
@@ -30,7 +30,15 @@ class EarningsCalculatorTest {
     @BeforeEach
     void beforeEach(){
         editor = new Editor(1L, "Eduardo", "email@provider.com", new BigDecimal(5), true);
-        post = new Post(1L, "Nome da Publicação", "O texto da publicação é muito ruim", editor, "java-abc-123", null, false, false);
+        post = Post.builder()
+                .id(1L)
+                .title("Nome da Publicação")
+                .content("O texto da publicação é muito ruim")
+                .author(editor)
+                .slug("java-abc-123")
+                .earnings(null)
+                .paid(false)
+                .build();
     }
 
     @Test

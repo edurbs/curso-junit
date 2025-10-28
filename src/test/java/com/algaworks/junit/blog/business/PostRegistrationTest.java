@@ -2,6 +2,7 @@ package com.algaworks.junit.blog.business;
 
 import com.algaworks.junit.blog.exception.BusinessRuleException;
 import com.algaworks.junit.blog.exception.PostNotFoundException;
+import com.algaworks.junit.blog.model.Earnings;
 import com.algaworks.junit.blog.model.Editor;
 import com.algaworks.junit.blog.model.Notification;
 import com.algaworks.junit.blog.model.Post;
@@ -37,11 +38,8 @@ class PostRegistrationTest {
     @Mock
     NotificationManager notificationManager;
 
-
     @Spy
-    Editor editor = new Editor("Nome", "email@provider.com", BigDecimal.TEN, false);
-    @Spy
-    Post post = new Post("Title", "Content", editor, false, false);
+    Post post = PostTestData.newPost().build();
 
     @InjectMocks
     PostRegistration sut;
@@ -69,8 +67,7 @@ class PostRegistrationTest {
 
         @BeforeEach
         void init(){
-            Post postSaved = new Post("Title", "Content", editor, false, false);
-            postSaved.setId(1L);
+            Post postSaved = PostTestData.updatedPost().build();
             when(postStorage.save(any(Post.class))).thenReturn(postSaved);
         }
 
@@ -97,10 +94,10 @@ class PostRegistrationTest {
 
             @Test
             void thenStorageSaves(){
-                post.setId(1L);
-                when(postStorage.findById(anyLong())).thenReturn(Optional.of(post));
+                Post updatedPost = PostTestData.updatedPost().build();
+                when(postStorage.findById(anyLong())).thenReturn(Optional.of(updatedPost));
 
-                sut.edit(post);
+                sut.edit(updatedPost);
 
                 verify(postStorage).save(any(Post.class));
 
@@ -118,13 +115,14 @@ class PostRegistrationTest {
 
             @Test
             void paidPost_thenPostUpdateWithData(){
-                post.setId(1L);
-                when(postStorage.findById(anyLong())).thenReturn(Optional.of(post));
-                when(post.isPaid()).thenReturn(false);
+                Post updatedPost = spy(PostTestData.updatedPost().build());
 
-                sut.edit(post);
+                when(postStorage.findById(anyLong())).thenReturn(Optional.of(updatedPost));
+                when(updatedPost.isPaid()).thenReturn(false);
 
-                verify(post).setEarnings(any());
+                sut.edit(updatedPost);
+
+                verify(updatedPost).setEarnings(any());
                 verify(earningsCalculator).calculate(any(Post.class));
             }
 
@@ -181,5 +179,31 @@ class PostRegistrationTest {
         }
 
 
+    }
+}
+
+class PostTestData{
+
+    public static Post.PostBuilder newPost(){
+        return Post.builder()
+                .title("Title")
+                .content("Content")
+                .author(getNewEditor())
+                .paid(false)
+                .published(false);
+    }
+
+    public static Post.PostBuilder updatedPost(){
+        return newPost()
+                .id(1L)
+                .earnings(getNewEarnings());
+    }
+
+    private static Editor getNewEditor(){
+        return new Editor("Nome", "email@provider.com", BigDecimal.TEN, false);
+    }
+
+    private static Earnings getNewEarnings(){
+        return new Earnings(BigDecimal.TEN, 1, BigDecimal.TEN);
     }
 }
