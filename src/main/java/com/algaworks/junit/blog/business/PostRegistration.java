@@ -1,10 +1,10 @@
 package com.algaworks.junit.blog.business;
 
-import com.algaworks.junit.blog.exception.PostNotFoundException;
 import com.algaworks.junit.blog.exception.BusinessRuleException;
-import com.algaworks.junit.blog.storage.PostStorage;
-import com.algaworks.junit.blog.model.Post;
+import com.algaworks.junit.blog.exception.PostNotFoundException;
 import com.algaworks.junit.blog.model.Notification;
+import com.algaworks.junit.blog.model.Post;
+import com.algaworks.junit.blog.storage.PostStorage;
 import com.algaworks.junit.blog.utility.SlugConverter;
 
 import java.time.OffsetDateTime;
@@ -38,7 +38,7 @@ public class PostRegistration {
 
         Post post = this.postStorage.findById(updatedPost.getId())
                 .orElseThrow(PostNotFoundException::new);
-        post.updateWithData(post);
+        post.updateWithData(updatedPost);
 
         if (!post.isPaid()) {
             post.setEarnings(this.earningsCalculator.calculate(post));
