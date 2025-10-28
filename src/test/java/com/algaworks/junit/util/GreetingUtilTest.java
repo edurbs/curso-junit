@@ -4,6 +4,8 @@ import com.algaworks.junit.custom.HumanPhraseDisplayNameGenerator;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,5 +47,12 @@ class GreetingUtilTest {
         int validHour = 9;
         Executable greet = () -> GreetingUtil.greet(validHour);
         assertDoesNotThrow(greet);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {5,6,7,8,9,10,11})
+    void givenMorningHour_whenGreet_thenReturnGoodMorning(int hour){
+        String greeting = GreetingUtil.greet(hour);
+        assertEquals("Good morning", greeting, "Wrong greeting");
     }
 }
